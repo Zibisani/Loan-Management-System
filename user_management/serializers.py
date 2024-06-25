@@ -12,12 +12,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     role = serializers.CharField(required=False, default='customer')
     class Meta:
         model = CustomUser
-        fields = ('username', 'password', 'email', 'role')
+        fields = ('username', 'first_name', 'last_name', 'password', 'email', 'role')
 
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
             password=validated_data['password'],
             role=validated_data.get('role', 'customer')  # Default role for registration
         )
