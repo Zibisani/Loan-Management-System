@@ -1,0 +1,30 @@
+/* custom.css */
+
+/* Add margin to the top of the dashboard container */
+.container {
+    margin-top: 20px;
+}
+
+/* Style the card header for user information */
+.card-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/* Style the list items */
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Style buttons inside list items */
+.list-group-item .btn-link {
+    text-decoration: none;
+    color: #007bff;
+}
+
+/* Style buttons inside the card footer */
+.card-footer .btn {
+    margin-right: 10px;
+}
