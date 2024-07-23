@@ -1,7 +1,7 @@
 # loan_management/serializers.py
 
 from rest_framework import serializers
-from .models import LoanApplication, Loan, Payment
+from .models import LoanApplication, Loan, Payment, Document
 from user_management.models import CustomUser
 
 
@@ -59,3 +59,9 @@ class PaymentSerializer(serializers.ModelSerializer):
         
         return data
 
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = ['documentID', 'application', 'documentType', 'documentPath']
+
+    

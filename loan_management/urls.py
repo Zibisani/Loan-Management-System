@@ -1,7 +1,7 @@
 # loan_management/urls.py
 
 from django.urls import path
-from .views import LoanApplicationView, LoanApplicationReviewView, LoanApplicationListView, PaymentView, CustomerViewLoanApplicationView, CustomerViewLoanView, LoanDetailView
+from .views import LoanApplicationView, LoanApplicationReviewView, LoanApplicationListView, PaymentView, CustomerViewLoanApplicationView, CustomerViewLoanView, LoanDetailView, DocumentUploadView
 
 
 urlpatterns = [
@@ -12,5 +12,6 @@ urlpatterns = [
     path('applications/<str:username>/', CustomerViewLoanApplicationView.as_view(), name='customer_view_loan_applications'),
     path('customer_view_loans/<str:username>/', CustomerViewLoanView.as_view(), name='customer_view_loans'),
     path('loan/<int:loanID>/', LoanDetailView.as_view(), name='loan-detail'),
+    path('document-upload/', DocumentUploadView.as_view(), name='document-upload'),
 
 ]

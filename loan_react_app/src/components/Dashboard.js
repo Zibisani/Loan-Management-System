@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './styles.css'; 
 
 const Dashboard = () => {
     const [userData, setUserData] = useState(null);
@@ -131,6 +132,7 @@ const Dashboard = () => {
 
     return (
         <div className="container mt-4">
+            <button className="btn btn-outline-danger logout-button" onClick={handleLogout}>Logout</button>
             <h1 className="mb-4">Welcome to your dashboard, {userData.username}!</h1>
             <div className="card mb-4">
                 <div className="card-body">
@@ -139,7 +141,7 @@ const Dashboard = () => {
                     <p><strong>Role:</strong> {userData.role}</p>
                 </div>
                 <div className="card-footer">
-                    <button className="btn btn-danger me-2" onClick={handleLogout}>Logout</button>
+                    
                     <button className="btn btn-primary" onClick={handleLoanApplication}>Submit Loan Application</button>
                 </div>
             </div>

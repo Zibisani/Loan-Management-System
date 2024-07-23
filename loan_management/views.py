@@ -9,7 +9,7 @@ from django.utils import timezone
 import stripe
 
 from .models import LoanApplication, Loan, Document, Payment
-from .serializers import LoanApplicationSerializer, LoanSerializer, PaymentSerializer
+from .serializers import LoanApplicationSerializer, LoanSerializer, PaymentSerializer, DocumentSerializer
 from user_management.models import CustomUser
 
 # Create your views here.
@@ -198,3 +198,13 @@ class LoanDetailView(APIView):
             return Response({'error': 'Loan not found'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+class DocumentUploadView(APIView):
+    def post(self, request):
+        serializer = DocumentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

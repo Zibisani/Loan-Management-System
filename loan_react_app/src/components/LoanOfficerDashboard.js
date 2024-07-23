@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './styles.css'; 
 
 const LoanOfficerDashboard = () => {
     const [applications, setApplications] = useState([]);
@@ -63,9 +64,19 @@ const LoanOfficerDashboard = () => {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('username');
+        navigate('/login');
+    };
+
     return (
         <div className="container">
-            <h2>Loan Officer Dashboard</h2>
+             <button className="btn btn-outline-danger logout-button" onClick={handleLogout}>Logout</button>
+            <div className="header d-flex justify-content-between align-items-center">
+                <h2>Loan Officer Dashboard</h2>
+               
+            </div>
             {message && <div className="alert alert-success">{message}</div>}
             {applications.length === 0 ? (
                 <p>No submitted applications</p>

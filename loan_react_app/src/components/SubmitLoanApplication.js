@@ -6,78 +6,121 @@ const SubmitLoanApplication = () => {
     const [durationOfLoan, setDurationOfLoan] = useState('');
     const [purpose, setPurpose] = useState('');
     const [amount, setAmount] = useState('');
-    const [error, setError] = useState('');
+    const [idProof, setIdProof] = useState(null);
+    const [incomeProof, setIncomeProof] = useState(null);
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         const token = localStorage.getItem('access_token');
-        const username = localStorage.getItem('username'); // Get the username from localStorage
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
+        const username = localStorage.getItem('username');
+
+        const loanApplicationData = {
+            username,
+            durationOfLoan,
+            purpose,
+            amount,
+        
         };
 
+        const documentData = new FormData();
+        documentData.append('documentType', 'ID Proof');
+        documentData.append('documentPath', idProof);
+        documentData.append('documentType', 'Income Proof');
+        documentData.append('documentPath', incomeProof);
+
+        console.log('Loan Application Data:', loanApplicationData);
+
+        // Check if the files are appended correctly
+        for (let pair of documentData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/loans/submit-loan/', {
-              username,
-              durationOfLoan,
-              purpose,
-              amount,
-            }, config);
-      
-            if (response.status === 201) {
-                setMessage('Loan application submitted successfully! Redirecting to dashboard...');
-                setTimeout(() => {
-                    window.location.href = '/dashboard';
-                }, 2000); // Redirect after 2 seconds
-            }
-          } catch (error) {
-            if (error.response && error.response.data) {
-              setError(JSON.stringify(error.response.data));
-            } else {
-              setError('Error submitting loan application');
-            }
+            const loanResponse = await axios.post(
+                'http://127.0.0.1:8000/api/loans/submit-loan/',
+                loanApplicationData,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            console.log('Loan Application Response:', loanResponse.data);
+
+            const applicationID = loanResponse.data.applicationID;
+            documentData.append('application', applicationID);
+
+            const idProofResponse = await axios.post(
+                'http://127.0.0.1:8000/api/loans/document-upload/',
+                documentData,
+                { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
+            );
+
+            console.log('ID Proof Document Response:', idProofResponse.data);
+
+            setMessage('Loan application and documents submitted successfully');
+            setTimeout(() => setMessage(''), 3000);
+            navigate('/customer-dashboard');
+        } catch (error) {
+            console.error('Error submitting loan application', error);
+            setMessage('Error submitting loan application');
+            setTimeout(() => setMessage(''), 3000);
         }
     };
 
     return (
-        <div>
+        <form onSubmit={handleSubmit}>
             <h2>Submit Loan Application</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Duration of Loan (months):</label>
-                    <input
-                        type="number"
-                        value={durationOfLoan}
-                        onChange={(e) => setDurationOfLoan(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Purpose:</label>
-                    <input
-                        type="text"
-                        value={purpose}
-                        onChange={(e) => setPurpose(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Amount:</label>
-                    <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Submit Application</button>
-            </form>
-        </div>
+            {message && <p>{message}</p>}
+            <label>
+                Duration of Loan (months):
+                <input
+                    type="number"
+                    value={durationOfLoan}
+                    onChange={(e) => setDurationOfLoan(e.target.value)}
+                    required
+                />
+            </label>
+            <br />
+            <label>
+                Purpose:
+                <input
+                    type="text"
+                    value={purpose}
+                    onChange={(e) => setPurpose(e.target.value)}
+                    required
+                />
+            </label>
+            <br />
+            <label>
+                Amount:
+                <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    required
+                />
+            </label>
+            <br />
+            <label>
+                ID Proof:
+                <input
+                    type="file"
+                    onChange={(e) => setIdProof(e.target.files[0])}
+                    required
+                />
+            </label>
+            <br />
+            <label>
+                Income Proof:
+                <input
+                    type="file"
+                    onChange={(e) => setIncomeProof(e.target.files[0])}
+                    required
+                />
+            </label>
+            <br />
+            <button type="submit">Submit</button>
+        </form>
     );
 };
 

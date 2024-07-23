@@ -2,6 +2,17 @@
   text-align: center;
 }
 
+
+
+.logout-button {
+  position: absolute;
+  top: 10px; /* Adjust this value to move the button up or down */
+  right: 10px; /* Adjust this value to move the button left or right */
+}
+
+
+
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
